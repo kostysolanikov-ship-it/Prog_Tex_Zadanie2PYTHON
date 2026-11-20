@@ -1,5 +1,5 @@
 # Jednoduchý kalkulátor: ozubené prevody a elektromotory
-# Spustenie:  pip install matplotlib   a potom   python jednoduchy_kalkulator.py
+# Spustenie:  pip install matplotlib   a potom   python zadanie2.py
 import random
 import tkinter as tk
 from tkinter import ttk
@@ -20,8 +20,8 @@ VZORCE = {
         ("n - otáčky [ot/min]", "M - krútiaci moment [N·m]", lambda n: 9550 * 7.5 / n, (500, 2950)),
 }
 
-hodnoty = []     # KROK 1: pole vstupných hodnôt
-vysledky = []    # KROK 3: vypočítané hodnoty
+hodnoty = []     #: pole vstupných hodnôt
+vysledky = []    #: pole vypočítaných hodnôt
 
 
 def aktualny_vzorec():
@@ -29,13 +29,13 @@ def aktualny_vzorec():
 
 
 def generuj():
-    """Vytvorí pole 60 náhodných hodnôt, urobí operácie a nakreslí graf."""
+    #Vytvorí pole 60 náhodných hodnôt, urobí operácie a nakreslí graf.
     global hodnoty, vysledky
     vstup, vystup, funkcia, (od, do) = aktualny_vzorec()
     hodnoty = [random.randint(od, do) for _ in range(60)]
     vysledky = [funkcia(x) for x in hodnoty]
 
-    # KROK 2: operácie s poľom (zoradenie, min, max, priemer)
+    #: operácie s poľom (zoradenie, min, max, priemer)
     zoradene = sorted(hodnoty)
     priemer = sum(hodnoty) / len(hodnoty)
     text_pole.config(text=(
@@ -48,8 +48,19 @@ def generuj():
     kresli()
 
 
+def zorad(zostupne):
+    #NOVÁ FUNKCIA: zoradí stĺpce (False = od najmenšieho, True = od najväčšieho)
+    global hodnoty, vysledky
+    if not hodnoty:
+        return
+    funkcia = aktualny_vzorec()[2]
+    hodnoty = sorted(hodnoty, reverse=zostupne)
+    vysledky = [funkcia(x) for x in hodnoty]
+    kresli()
+
+
 def vypocitaj():
-    """Výpočet vzorca pre ľubovoľné číslo zadané používateľom."""
+    #Výpočet vzorca pre ľubovoľné číslo zadané používateľom.
     funkcia = aktualny_vzorec()[2]
     try:
         x = float(pole_vstup.get().replace(",", "."))
@@ -62,16 +73,15 @@ def vypocitaj():
 
 
 def kresli():
-    """KROK 4: pôvodné aj vypočítané hodnoty v jednom grafe."""
+    #: pôvodné aj vypočítané hodnoty v jednom grafe
     vstup, vystup = aktualny_vzorec()[:2]
     obr.clear()
     os1 = obr.add_subplot(111)
-    os2 = os1.twinx()                      # druhá os pre vypočítané hodnoty
-    # pôvodné náhodné čísla = stĺpce (vždy viditeľné), vypočítané = zelená čiara
+    os2 = os1.twinx()                      
     stlpce = os1.bar(range(len(hodnoty)), hodnoty, color=MED, alpha=0.7, label=vstup)
     ciara, = os2.plot(vysledky, color=ZELENA, marker="s", markersize=4, linewidth=1.5, label=vystup)
     prvky = [stlpce, ciara]
-    if ukaz_zoradene.get():                # NOVÁ FUNKCIA: zoradené náhodné čísla v grafe
+    if ukaz_zoradene.get():     
         zoradena, = os1.plot(sorted(hodnoty), color=TMAVA_MED, linestyle="--", linewidth=2,
                              label=vstup + " (zoradené)")
         prvky.append(zoradena)
@@ -96,6 +106,13 @@ vyber.pack(pady=5)
 
 tk.Button(okno, text="Generovať nové hodnoty", bg=MED, fg="white",
           command=generuj).pack(pady=5)
+
+rad_zoradenia = tk.Frame(okno, bg=POZADIE)
+rad_zoradenia.pack(pady=(0, 5))
+tk.Button(rad_zoradenia, text="↑ Stĺpce od najmenšieho po najväčší", bg=TMAVA_MED, fg="white",
+          command=lambda: zorad(False)).pack(side="left", padx=3)
+tk.Button(rad_zoradenia, text="↓ Stĺpce od najväčšieho po najmenší", bg=TMAVA_MED, fg="white",
+          command=lambda: zorad(True)).pack(side="left", padx=3)
 
 ukaz_zoradene = tk.BooleanVar(value=True)                        # zaškrtávacie pole
 tk.Checkbutton(okno, text="Zobraziť v grafe aj zoradené hodnoty", variable=ukaz_zoradene,

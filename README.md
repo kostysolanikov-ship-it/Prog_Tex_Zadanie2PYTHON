@@ -1,4 +1,6 @@
-**# Kalkulátor: ozubené prevody a elektromotory
+##V zadaní sa nachádza viacero verzií vypracovania, za dokončenú sa považuje tá najnovšia, ale je tam ešte veľa ďalších zaujímavých vecí, napríklad zadanie vypracované cez Claude Code.
+
+# Kalkulátor: ozubené prevody a elektromotory
 
 Jednoduchá desktopová aplikácia v jazyku **Python** s grafickým rozhraním (**Tkinter**) a vizualizáciou v knižnici **Matplotlib**. Slúži na rýchly výpočet technických vzorcov pre ozubené kolesá a elektromotory, ako aj na štatistickú analýzu a grafické zobrazenie náhodne vygenerovaných vstupných hodnôt.
 
